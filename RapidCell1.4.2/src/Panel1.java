@@ -43,6 +43,7 @@ public class Panel1 extends JPanel {
 	private JComboBox jComboBoxIniPosition = null;
 	private JLabel jLabel14 = null;
 	private JComboBox jComboBoxGradient = null;
+	private JComboBox jComboBoxLigandMethylation = null;
 	private JLabel jLabel15 = null;
 	private JComboBox jComboBoxMedium = null;
 	private JLabel jLabel16 = null;
@@ -198,6 +199,8 @@ public class Panel1 extends JPanel {
 		JScrollPane scrollPane = new JScrollPane(textAreaConsole);
 		scrollPane.setBounds(12, 400, 760, 130);
 		add(scrollPane);
+
+		setJComboBoxExponentialDisplacementGradient();
 	}
 	
 	public void resetPanel(){
@@ -264,6 +267,7 @@ public class Panel1 extends JPanel {
 		Network.setRelativeCheA(0.01*Double.parseDouble(jTextFieldCheA.getText()));
 		Network.setRates(Double.parseDouble(textFieldkR.getText()), Double.parseDouble(textFieldkB.getText()), 
 				Double.parseDouble(textFieldkA.getText()), Double.parseDouble(textFieldkY.getText()), Double.parseDouble(textFieldkZ.getText()));
+		Network.setLigandMethylationRelation(jComboBoxLigandMethylation.getSelectedIndex());
 	}
 	/**
 	 * This method initializes jButtonRun	
@@ -601,7 +605,7 @@ public class Panel1 extends JPanel {
 	 */
 	private JTextField getJTextFieldNcells() {
 		if (jTextFieldNcells == null) {
-			jTextFieldNcells = new JTextField("1");
+			jTextFieldNcells = new JTextField("5");
 			jTextFieldNcells.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			jTextFieldNcells.setBounds(new Rectangle(410, 46, 85, 20));
 			jTextFieldNcells.setHorizontalAlignment(JTextField.RIGHT);
@@ -617,7 +621,7 @@ public class Panel1 extends JPanel {
 	 */
 	private JTextField getJTextFieldTmax() {
 		if (jTextFieldTmax == null) {
-			jTextFieldTmax = new JTextField("500");
+			jTextFieldTmax = new JTextField("10000");
 			jTextFieldTmax.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			jTextFieldTmax.setBounds(new Rectangle(410, 82, 85, 20));
 			jTextFieldTmax.setHorizontalAlignment(JTextField.RIGHT);
@@ -651,7 +655,7 @@ public class Panel1 extends JPanel {
 			jComboBoxIniPosition = new JComboBox(IniPosition);
 			jComboBoxIniPosition.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jComboBoxIniPosition.setBounds(154, 31, 130, 20);
-			jComboBoxIniPosition.setSelectedIndex(0);
+			jComboBoxIniPosition.setSelectedIndex(1);
 			jComboBoxIniPosition.setBackground(Color.white);
 			jComboBoxIniPosition.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -675,6 +679,21 @@ public class Panel1 extends JPanel {
 		return jComboBoxIniPosition;
 	}
 
+	private void setJComboBoxExponentialDisplacementGradient() {
+		textAreaConsole.append("\n E(x)=Rate*exp(x)");
+		jPanelGradParam1.setVisible(true);
+		jPanelGradParam2.setVisible(false);
+		jLabelSigma.setEnabled(false);
+		jTextFieldSigma.setEnabled(false);
+		jLabelGradMin.setEnabled(false);
+		jTextFieldMinAsp.setEnabled(false);
+		jLabelGauss1.setEnabled(false);
+		jTextFieldGradCenterX.setEnabled(false);
+		jTextFieldGradCenterY.setEnabled(false);
+		jLabelGradRate.setEnabled(true);
+		jTextFieldGradRate.setEnabled(true);
+	}
+
 	/**
 	 * This method initializes jComboBoxGradient	
 	 * 	
@@ -695,7 +714,7 @@ public class Panel1 extends JPanel {
 			jComboBoxGradient = new JComboBox(Gradient);
 			jComboBoxGradient.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jComboBoxGradient.setBounds(new Rectangle(306, 34, 210, 25));
-			jComboBoxGradient.setSelectedIndex(0);
+			jComboBoxGradient.setSelectedIndex(8);
 			jComboBoxGradient.setBackground(Color.white);
 			jComboBoxGradient.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -773,18 +792,7 @@ public class Panel1 extends JPanel {
 						jLabelGauss1.setEnabled(false);
 					}
 					else if(jComboBoxGradient.getSelectedIndex()==8){//exp(x)
-						textAreaConsole.append("\n E(x)=Rate*exp(x)");
-						jPanelGradParam1.setVisible(true);
-						jPanelGradParam2.setVisible(false);
-						jLabelSigma.setEnabled(false);
-						jTextFieldSigma.setEnabled(false);
-						jLabelGradMin.setEnabled(false);
-						jTextFieldMinAsp.setEnabled(false);	
-						jLabelGauss1.setEnabled(false);
-						jTextFieldGradCenterX.setEnabled(false);
-						jTextFieldGradCenterY.setEnabled(false);
-						jLabelGradRate.setEnabled(true);	
-						jTextFieldGradRate.setEnabled(true);	
+						setJComboBoxExponentialDisplacementGradient();
 					}
 					else if(jComboBoxGradient.getSelectedIndex()==9){
 						textAreaConsole.append("\n Attractant stepwise added and removed");
@@ -804,6 +812,35 @@ public class Panel1 extends JPanel {
 			});
 		}
 		return jComboBoxGradient;
+	}
+
+	private JComboBox getJComboBoxLigandMethylation() {
+		if (jComboBoxLigandMethylation == null) {
+			String[] LigandMethylation = {
+				"Default Dynamics",  // 0
+				"M = 0",  // 1
+				"Partial M = 0",  // 2
+				"Time Delay",  // 3
+				"Polynomial",  // 4
+				"Piecewise Linear"  // 5
+			};
+			jComboBoxLigandMethylation = new JComboBox(LigandMethylation);
+			jComboBoxLigandMethylation.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			jComboBoxLigandMethylation.setBounds(new Rectangle(370, 270, 170, 25));
+			jComboBoxLigandMethylation.setSelectedIndex(0);
+			jComboBoxLigandMethylation.setBackground(Color.white);
+			jComboBoxLigandMethylation.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					if (jComboBoxLigandMethylation.getSelectedIndex() == 0){
+						textAreaConsole.append("\n Ligand-Methylation Relation: Default Dynamics");
+					}
+					else if (jComboBoxLigandMethylation.getSelectedIndex() == 1) {
+						textAreaConsole.append("\n Ligand-Methylation Relation: M = 0");
+					}
+				}
+			});
+		}
+		return jComboBoxLigandMethylation;
 	}
 
 	/**
@@ -1221,6 +1258,13 @@ public class Panel1 extends JPanel {
 			lblChebCatalyticRate.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			lblChebCatalyticRate.setBounds(298, 159, 128, 20);
 			jPanelNetwork.add(lblChebCatalyticRate);
+
+			JLabel jLabelLigandMethylation = new JLabel("Ligand-Methylation Relation");
+			jLabelLigandMethylation.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			jLabelLigandMethylation.setBounds(new Rectangle(175, 270, 200, 25));
+			jPanelNetwork.add(jLabelLigandMethylation);
+
+			jPanelNetwork.add(getJComboBoxLigandMethylation(), null);
 		}
 		return jPanelNetwork;
 	}
@@ -1607,7 +1651,7 @@ public class Panel1 extends JPanel {
 	 */
 	private JTextField getJTextFieldIniPosX() {
 		if (jTextFieldIniPosX == null) {
-			jTextFieldIniPosX = new JTextField("10.0");
+			jTextFieldIniPosX = new JTextField("0.02");
 			jTextFieldIniPosX.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jTextFieldIniPosX.setBounds(198, 0, 37, 20);
 			jTextFieldIniPosX.setHorizontalAlignment(JTextField.RIGHT);

@@ -11,7 +11,7 @@ public abstract class Cell {
 	public Network chemotaxisNetwork;
 	public static int Nmotors;// 5 by default
 	public Motor[] flagellarMotors;
-	public static double Drotation;//rad^2/s, 0.062 [Berg, 1983]; 0.1605 [Andrews,2006, T=20°C]; 0.2086 (T=30°C)
+	public static double Drotation;//rad^2/s, 0.062 [Berg, 1983]; 0.1605 [Andrews,2006, T=20C]; 0.2086 (T=30C)
 	public static double maxCellVelocity;// mm/s, maximum cell velocity
 	public double cellVelocity=maxCellVelocity;// mm/s, actual cell velocity
 	public double MaxCWmotorsInTumble=0;// maximal number of motors involved in the current tumble
