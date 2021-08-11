@@ -817,12 +817,13 @@ public class Panel1 extends JPanel {
 	private JComboBox getJComboBoxLigandMethylation() {
 		if (jComboBoxLigandMethylation == null) {
 			String[] LigandMethylation = {
-				"Default Dynamics",  // 0
-				"M = 0",  // 1
-				"Partial M = 0",  // 2
-				"Time Delay",  // 3
-				"Polynomial",  // 4
-				"Piecewise Linear"  // 5
+				"Methylation Dynamics",  // 0
+				"Step Function",  // 1
+				"Gaussian",  // 2
+				"M = 0",  // 3
+				"Exponential",  // 4
+				"Linear (Two Segments)",  // 5
+				"Linear (One Segment)"  // 6
 			};
 			jComboBoxLigandMethylation = new JComboBox(LigandMethylation);
 			jComboBoxLigandMethylation.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -831,11 +832,28 @@ public class Panel1 extends JPanel {
 			jComboBoxLigandMethylation.setBackground(Color.white);
 			jComboBoxLigandMethylation.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					if (jComboBoxLigandMethylation.getSelectedIndex() == 0){
-						textAreaConsole.append("\n Ligand-Methylation Relation: Default Dynamics");
-					}
-					else if (jComboBoxLigandMethylation.getSelectedIndex() == 1) {
-						textAreaConsole.append("\n Ligand-Methylation Relation: M = 0");
+					switch (jComboBoxLigandMethylation.getSelectedIndex()) {
+						case 0:
+							textAreaConsole.append("\n Ligand-Methylation Relation: " + LigandMethylation[0]);
+							break;
+						case 1:
+							textAreaConsole.append("\n Ligand-Methylation Relation: " + LigandMethylation[1]);
+							break;
+						case 2:
+							textAreaConsole.append("\n Ligand-Methylation Relation: " + LigandMethylation[2]);
+							break;
+						case 3:
+							textAreaConsole.append("\n Ligand-Methylation Relation: " + LigandMethylation[3]);
+							break;
+						case 4:
+							textAreaConsole.append("\n Ligand-Methylation Relation: " + LigandMethylation[4]);
+							break;
+						case 5:
+							textAreaConsole.append("\n Ligand-Methylation Relation: " + LigandMethylation[5]);
+							break;
+						case 6:
+							textAreaConsole.append("\n Ligand-Methylation Relation: " + LigandMethylation[6]);
+							break;
 					}
 				}
 			});
@@ -1740,7 +1758,7 @@ public class Panel1 extends JPanel {
 			jTextFieldFileNameAve.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jTextFieldFileNameAve.setBounds(177, 1, 237, 25);
 			jTextFieldFileNameAve.setHorizontalAlignment(JTextField.RIGHT);
-			jTextFieldFileNameAve.setText("averages.out");
+			jTextFieldFileNameAve.setText("averages.txt");
 		}
 		return jTextFieldFileNameAve;
 	}
@@ -1756,7 +1774,7 @@ public class Panel1 extends JPanel {
 			jTextFieldFileNameFull.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jTextFieldFileNameFull.setBounds(177, 35, 237, 25);
 			jTextFieldFileNameFull.setHorizontalAlignment(JTextField.RIGHT);
-			jTextFieldFileNameFull.setText("individuals.out");
+			jTextFieldFileNameFull.setText("individuals.txt");
 		}
 		return jTextFieldFileNameFull;
 	}

@@ -32,54 +32,88 @@ public class Network {
 		P_on=1./3.;
 	}
 
+	private double getNextExponential(double lambda) {
+	    return  Math.log(1 - r.nextDouble()) / (-lambda);
+	}
+
 	private double ligandToMethPoly(double logS) {
-		return -0.05 + 5.150327199838268 + 1.1960663826447897 * Math.pow(logS, 1) - 0.4712982846490096 * Math.pow(logS, 2) - 0.04125276995184807 * Math.pow(logS, 3) + 0.08202995456148689 * Math.pow(logS, 4) + 0.00012251899823295862 * Math.pow(logS, 5) - 0.0038056894330643696 * Math.pow(logS, 6) + 0.00015745073841346674 * Math.pow(logS, 7);
+		return 5.150327199838268
+			   + 1.1960663826447897 * Math.pow(logS, 1)
+			   - 0.4712982846490096 * Math.pow(logS, 2)
+			   - 0.04125276995184807 * Math.pow(logS, 3)
+			   + 0.08202995456148689 * Math.pow(logS, 4)
+			   + 0.00012251899823295862 * Math.pow(logS, 5)
+			   - 0.0038056894330643696 * Math.pow(logS, 6)
+			   + 0.00015745073841346674 * Math.pow(logS, 7);
+	}
+
+	private void clampMeth() {
+		if (meth < 0.0) meth = 0.0;
+		else if (meth > 8.0) meth = 8.0;
 	}
 
 	private void updateMeth() {
 		// update methylation level, by simple ordinary differential equation
-		if (meth < 0) meth = 0.0;
-		else if (meth > 8) meth = 8.0;
-		else meth = meth + dt * adaptRate * (k_R * CheR * (1.0 - P_on) - k_B * CheBP * P_on);
+		meth = meth + dt * adaptRate * (k_R * CheR * (1.0 - P_on) - k_B * CheBP * P_on);
 	}
 
 	public void updateMWCmodel(double S){
 		double eps_meth = 0.0, sum_fa, sum_fs, F, logS = Math.log10(S);
 
+		// TODO: print strings to console for each
 		switch (ligandMethylationRelationIndex) {
-			case 0:  // Update methylation level by simple ordinary differential equations
+			case 0:  // Real methylation dynamics (maximum drift)
 				updateMeth();
 				break;
-			case 1:
+			case 1:  // Step function (high drift but with reduced information)
+				meth = Math.round(ligandToMethPoly(logS));
+				break;
+			case 2:  // Gaussian around m = 4.0 (medium drift with minimal information)
+				meth = 4.0 + r.nextGaussian();
+				break;
+			case 3:  // M = 0.0 (minimum entropy and minimum information)
 				meth = 0.0;
 				break;
-			case 2:  // Methylation by differential equations but with M = 0 to save information
-				if ((logS < -1.5) || ((logS > 1.0) && (logS < 2.5))) meth = 0.0;
+			case 4:  // Exponential distribution (very low entropy and information with some drift)
+				meth = getNextExponential(1.0);
+				break;
+			case 5:  // Only includes two linearly increasing segments, otherwise m = 0.0 (balance of drift and entropy, leaning towards maximizing drift)
+				if ((logS < -1.5) || ((logS > 1.0) && (logS < 2.5)) || (logS > 3.25)) meth = 0.0;
 				else {
 					if (meth == 0.0) meth = ligandToMethPoly(logS);
 					updateMeth();
 				}
 				break;
-			case 3:  // Memory of previous ligand levels using S from several time steps ago
-				methMemory.add(S);
-				if (methMemory.size() > 100) S = methMemory.remove();
-				else S = methMemory.element();
-				updateMeth();
+			case 6:  // Only includes one linearly increasing segment, otherwise m = 0.0 (balance of drift and entropy, leaning towards minimizing entropy)
+				if ((logS < 2.5) || (logS > 3.25)) meth = 0.0;
+				else {
+					if (meth == 0.0) meth = ligandToMethPoly(logS);
+					updateMeth();
+				}
 				break;
-			case 4:  // 7th degree polynomial best fit based on 100 simulations
-				if (logS <= 3.5) meth = ligandToMethPoly(logS);
-				else meth = 8.0;
-				meth = Math.max(0.0, Math.min(8.0, meth));
-				break;
-			case 5:  // Piecewise linear methylation level as a function of ligand concentration
-				if (logS <= -2.0) meth = 1.85;
-				else if (logS <= 1.0) meth = 4.0 / 3.0 * logS + 14.0 / 3.0;
-				else if (logS <= 2.0) meth = 0.5 * logS + 5.5;
-				else meth = 1.5 * logS + 3.5;
-				meth = meth + 0.1 * r.nextGaussian();
-				meth = Math.max(0.0, Math.min(8.0, meth));
-				break;
+			// case 7:  // Memory of previous ligand levels using S from several time steps ago
+			// 	methMemory.add(S);
+			// 	if (methMemory.size() > 100) S = methMemory.remove();
+			// 	else S = methMemory.element();
+			// 	updateMeth();
+			// 	break;
+			// case 8:  // 7th degree polynomial best fit based on 100 simulations
+			// 	if (logS <= 3.5) meth = ligandToMethPoly(logS);
+			// 	else meth = 8.0;
+			// 	meth = Math.max(0.0, Math.min(8.0, meth));
+			// 	break;
+			// case 9:  // Piecewise linear methylation level as a function of ligand concentration
+			// 	if (logS <= -2.0) meth = 1.85;
+			// 	else if (logS <= 1.0) meth = 4.0 / 3.0 * logS + 14.0 / 3.0;
+			// 	else if (logS <= 2.0) meth = 0.5 * logS + 5.5;
+			// 	else meth = 1.5 * logS + 3.5;
+			// 	meth = meth + 0.1 * r.nextGaussian();
+			// 	meth = Math.max(0.0, Math.min(8.0, meth));
+			// 	break;
 		}
+
+		// Clamp methylation level to be between 0 and 8
+		clampMeth();
 
 		// compute free-energy offset from methylation:
 		if(meth<0) eps_meth=1.0; // Endres & Wingreen, 2006, piece-wise linear
