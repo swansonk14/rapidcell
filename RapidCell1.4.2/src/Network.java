@@ -39,6 +39,8 @@ public class Network {
 	}
 
 	private double ligandToMethPoly(double logS) {
+		if (logS > 3.3) return 8.0;
+
 		return 5.150327199838268
 			   + 1.1960663826447897 * Math.pow(logS, 1)
 			   - 0.4712982846490096 * Math.pow(logS, 2)
@@ -63,16 +65,16 @@ public class Network {
 		double eps_meth = 0.0, sum_fa, sum_fs, F, logS = Math.log10(S);
 		steps++;
 
-		// TODO: print strings to console for each
+		// TODO: add random gaussian noise to precise function
 		switch (ligandMethylationRelationIndex) {
 			case 0:  // Real methylation dynamics (maximum drift)
 				updateMeth();
 				break;
 			case 1:  // Step function (high drift but with reduced information)
-				meth = Math.round(ligandToMethPoly(logS));
+				meth = Math.round(4 * ligandToMethPoly(logS)) / 4.0;
 				break;
 			case 2:  // Gaussian distribution (medium drift with minimal information)
-				if (steps % stepsPerMethChange == 0) meth = 2.5 + RG3.nextGaussian();
+				if (steps % stepsPerMethChange == 0) meth = 4.0 + RG3.nextGaussian();
 				break;
 			case 3:  // M = 0.0 (minimum entropy and minimum information)
 				meth = 0.0;
@@ -94,16 +96,14 @@ public class Network {
 					updateMeth();
 				}
 				break;
-			// case 7:  // Memory of previous ligand levels using S from several time steps ago
+			case 7:  // 7th degree polynomial best fit based on 100 simulations
+				meth = ligandToMethPoly(logS);
+				break;
+			// case 8:  // Memory of previous ligand levels using S from several time steps ago
 			// 	methMemory.add(S);
 			// 	if (methMemory.size() > 100) S = methMemory.remove();
 			// 	else S = methMemory.element();
 			// 	updateMeth();
-			// 	break;
-			// case 8:  // 7th degree polynomial best fit based on 100 simulations
-			// 	if (logS <= 3.5) meth = ligandToMethPoly(logS);
-			// 	else meth = 8.0;
-			// 	meth = Math.max(0.0, Math.min(8.0, meth));
 			// 	break;
 			// case 9:  // Piecewise linear methylation level as a function of ligand concentration
 			// 	if (logS <= -2.0) meth = 1.85;

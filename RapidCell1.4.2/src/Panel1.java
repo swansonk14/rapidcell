@@ -834,7 +834,8 @@ public class Panel1 extends JPanel {
 				"M = 0",  // 3
 				"Exponential",  // 4
 				"Linear (Two Segments)",  // 5
-				"Linear (One Segment)"  // 6
+				"Linear (One Segment)",  // 6
+				"Polynomial"  // 7
 			};
 			jComboBoxLigandMethylation = new JComboBox(LigandMethylation);
 			jComboBoxLigandMethylation.setFont(new Font("Tahoma", Font.PLAIN, 15));
