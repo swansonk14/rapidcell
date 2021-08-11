@@ -224,11 +224,17 @@ public void createCells(int newNcells){
 		Ncells=newNcells;
 		arrCells= new Cell2D[Ncells];
 		for(int j=0;j<Ncells;j++){
+			double x = Xini, y = Yini;
+
+			// Random initial position
+			if (x == -1) x = Lx * RG2.nextDouble();
+			if (y == -1) y = Ly * RG2.nextDouble();
+
 			if(IniOri==1){
-				arrCells[j]=new Cell2D(Xini,Yini);// random ori
+				arrCells[j]=new Cell2D(x,y);// random ori
 			}
 			else{
-				arrCells[j]=new Cell2D(Xini,Yini,IniOri);
+				arrCells[j]=new Cell2D(x,y,IniOri);
 			}
 		}
 

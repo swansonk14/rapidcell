@@ -1,4 +1,3 @@
-import java.util.Random;
 import java.util.Arrays;
 import java.util.LinkedList;
 public class Network {
@@ -22,7 +21,8 @@ public class Network {
 	private static double adaptPrecision;// set 1.0 for a perfect adaptation (100%)
 	private static double k_R=0.0182, k_B=0.0364;// effective catalytic rates
 	private static double kA=5, kY=100, kZ=30, gY=0.1;// 
-	private Random r = new Random(0);
+	private static long seed;
+	private static MersenneTwister RG3;
 	private LinkedList<Double> methMemory = new LinkedList<Double>();
 	private static int ligandMethylationRelationIndex;
 	private int steps;
@@ -35,7 +35,7 @@ public class Network {
 	}
 
 	private double getNextExponential(double lambda) {
-	    return  Math.log(1 - r.nextDouble()) / (-lambda);
+	    return  Math.log(1 - RG3.nextDouble()) / (-lambda);
 	}
 
 	private double ligandToMethPoly(double logS) {
@@ -72,7 +72,7 @@ public class Network {
 				meth = Math.round(ligandToMethPoly(logS));
 				break;
 			case 2:  // Gaussian distribution (medium drift with minimal information)
-				if (steps % stepsPerMethChange == 0) meth = 2.5 + r.nextGaussian();
+				if (steps % stepsPerMethChange == 0) meth = 2.5 + RG3.nextGaussian();
 				break;
 			case 3:  // M = 0.0 (minimum entropy and minimum information)
 				meth = 0.0;
@@ -110,7 +110,7 @@ public class Network {
 			// 	else if (logS <= 1.0) meth = 4.0 / 3.0 * logS + 14.0 / 3.0;
 			// 	else if (logS <= 2.0) meth = 0.5 * logS + 5.5;
 			// 	else meth = 1.5 * logS + 3.5;
-			// 	meth = meth + 0.1 * r.nextGaussian();
+			// 	meth = meth + 0.1 * RG3.nextGaussian();
 			// 	meth = Math.max(0.0, Math.min(8.0, meth));
 			// 	break;
 		}
@@ -165,4 +165,8 @@ public class Network {
 		kZ=kZ0;
 	}
 	public static void setLigandMethylationRelation(int relationIndex) {ligandMethylationRelationIndex = relationIndex;}
+	public static void setRandSeed(long s){
+		seed = s;
+		RG3 = new MersenneTwister(seed);
+	}
 }

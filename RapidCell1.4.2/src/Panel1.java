@@ -246,6 +246,7 @@ public class Panel1 extends JPanel {
 		myModel.setDt(Double.parseDouble(jTextFieldDt.getText()));
 		myModel.setRandSeed(Long.parseLong(jTextFieldSeed.getText()));
 		Cell2D.setRandSeed(Long.parseLong(jTextFieldSeed.getText()));
+		Network.setRandSeed(Long.parseLong(jTextFieldSeed.getText()));
 		Network.setDissConstants(Double.parseDouble(jTextFieldK_offTar.getText()), 
 				Double.parseDouble(jTextFieldK_onTar.getText()), 
 				Double.parseDouble(jTextFieldK_offTsr.getText()),
@@ -651,7 +652,7 @@ public class Panel1 extends JPanel {
 	 */
 	private JComboBox getJComboBoxIniPosition() {
 		if (jComboBoxIniPosition == null) {
-			String[] IniPosition = {"Center of arena", "Center of left wall", "Custom (x,y)"};
+			String[] IniPosition = {"Center of arena", "Center of left wall", "Custom (x,y)", "Random (x,y)"};
 			jComboBoxIniPosition = new JComboBox(IniPosition);
 			jComboBoxIniPosition.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jComboBoxIniPosition.setBounds(154, 31, 130, 20);
@@ -661,17 +662,27 @@ public class Panel1 extends JPanel {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if(jComboBoxIniPosition.getSelectedIndex()==0){//center
 						jTextFieldIniPosX.setText(String.valueOf(Double.parseDouble(jTextFieldLx.getText())/2));
+						jTextFieldIniPosX.setEnabled(false);
 						jTextFieldIniPosY.setText(String.valueOf(Double.parseDouble(jTextFieldLy.getText())/2));
+						jTextFieldIniPosY.setEnabled(false);
 					}
 					else if(jComboBoxIniPosition.getSelectedIndex()==1){//left wall
 						jTextFieldIniPosX.setText("0.02");
+						jTextFieldIniPosX.setEnabled(false);
 						jTextFieldIniPosY.setText(String.valueOf(Double.parseDouble(jTextFieldLy.getText())/2));
+						jTextFieldIniPosY.setEnabled(false);
 					}
-					else{
+					else if(jComboBoxIniPosition.getSelectedIndex()==2){//custom
 						jTextFieldIniPosX.setText("");
 						jTextFieldIniPosX.setEnabled(true);
 						jTextFieldIniPosY.setText("");
 						jTextFieldIniPosY.setEnabled(true);
+					}
+					else if(jComboBoxIniPosition.getSelectedIndex()==3){//random
+						jTextFieldIniPosX.setText("-1");
+						jTextFieldIniPosX.setEnabled(false);
+						jTextFieldIniPosY.setText("-1");
+						jTextFieldIniPosY.setEnabled(false);
 					}
 				}
 			});
