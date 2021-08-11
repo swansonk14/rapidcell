@@ -25,6 +25,8 @@ public class Network {
 	private Random r = new Random(0);
 	private LinkedList<Double> methMemory = new LinkedList<Double>();
 	private static int ligandMethylationRelationIndex;
+	private int steps;
+	private final int stepsPerMethChange = 1000;
 
 	public Network(Cell newCell){
 		adaptRate=Model.commonAdaptRate;//default coefficient of adaptation rate, if the population is homogeneous
@@ -59,6 +61,7 @@ public class Network {
 
 	public void updateMWCmodel(double S){
 		double eps_meth = 0.0, sum_fa, sum_fs, F, logS = Math.log10(S);
+		steps++;
 
 		// TODO: print strings to console for each
 		switch (ligandMethylationRelationIndex) {
@@ -68,14 +71,14 @@ public class Network {
 			case 1:  // Step function (high drift but with reduced information)
 				meth = Math.round(ligandToMethPoly(logS));
 				break;
-			case 2:  // Gaussian around m = 4.0 (medium drift with minimal information)
-				meth = 4.0 + r.nextGaussian();
+			case 2:  // Gaussian distribution (medium drift with minimal information)
+				if (steps % stepsPerMethChange == 0) meth = 2.5 + r.nextGaussian();
 				break;
 			case 3:  // M = 0.0 (minimum entropy and minimum information)
 				meth = 0.0;
 				break;
 			case 4:  // Exponential distribution (very low entropy and information with some drift)
-				meth = getNextExponential(1.0);
+				if (steps % stepsPerMethChange == 0) meth = getNextExponential(0.5);
 				break;
 			case 5:  // Only includes two linearly increasing segments, otherwise m = 0.0 (balance of drift and entropy, leaning towards maximizing drift)
 				if ((logS < -1.5) || ((logS > 1.0) && (logS < 2.5)) || (logS > 3.25)) meth = 0.0;
