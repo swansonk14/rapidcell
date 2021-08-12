@@ -636,7 +636,7 @@ public class Panel1 extends JPanel {
 	 */
 	private JTextField getJTextFieldLx() {
 		if (jTextFieldLx == null) {
-			jTextFieldLx = new JTextField("20");
+			jTextFieldLx = new JTextField("16");
 			jTextFieldLx.setBounds(241, 226, 37, 20);
 			jTextFieldLx.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jTextFieldLx.setToolTipText("Arena's width, mm");
@@ -656,7 +656,7 @@ public class Panel1 extends JPanel {
 			jComboBoxIniPosition = new JComboBox(IniPosition);
 			jComboBoxIniPosition.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jComboBoxIniPosition.setBounds(154, 31, 130, 20);
-			jComboBoxIniPosition.setSelectedIndex(1);
+			jComboBoxIniPosition.setSelectedIndex(3);
 			jComboBoxIniPosition.setBackground(Color.white);
 			jComboBoxIniPosition.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -1529,7 +1529,7 @@ public class Panel1 extends JPanel {
 			jTextFieldLy.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jTextFieldLy.setToolTipText("Arena's height, mm");
 			jTextFieldLy.setHorizontalAlignment(JTextField.RIGHT);
-			jTextFieldLy.setText("20");
+			jTextFieldLy.setText("16");
 		}
 		return jTextFieldLy;
 	}
@@ -1681,7 +1681,7 @@ public class Panel1 extends JPanel {
 	 */
 	private JTextField getJTextFieldIniPosX() {
 		if (jTextFieldIniPosX == null) {
-			jTextFieldIniPosX = new JTextField("0.02");
+			jTextFieldIniPosX = new JTextField("-1");
 			jTextFieldIniPosX.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jTextFieldIniPosX.setBounds(198, 0, 37, 20);
 			jTextFieldIniPosX.setHorizontalAlignment(JTextField.RIGHT);
@@ -1697,7 +1697,7 @@ public class Panel1 extends JPanel {
 	 */
 	private JTextField getJTextFieldIniPosY() {
 		if (jTextFieldIniPosY == null) {
-			jTextFieldIniPosY = new JTextField("10.0");
+			jTextFieldIniPosY = new JTextField("-1");
 			jTextFieldIniPosY.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			jTextFieldIniPosY.setBounds(247, 0, 37, 20);
 			jTextFieldIniPosY.setEnabled(false);

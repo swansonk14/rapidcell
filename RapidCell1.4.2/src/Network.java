@@ -63,7 +63,9 @@ public class Network {
 
 	public void updateMWCmodel(double S){
 		double eps_meth = 0.0, sum_fa, sum_fs, F, logS = Math.log10(S);
-		steps++;
+
+		// Set initial methylation according to position
+		if (steps == 0) meth = ligandToMethPoly(logS);
 
 		// TODO: add random gaussian noise to precise function
 		switch (ligandMethylationRelationIndex) {
@@ -71,10 +73,10 @@ public class Network {
 				updateMeth();
 				break;
 			case 1:  // Step function (high drift but with reduced information)
-				meth = Math.round(4 * ligandToMethPoly(logS)) / 4.0;
+				if (steps % stepsPerMethChange == 0) meth = Math.round(4 * ligandToMethPoly(logS)) / 4.0 + RG3.nextGaussian() / 32.0;
 				break;
 			case 2:  // Gaussian distribution (medium drift with minimal information)
-				if (steps % stepsPerMethChange == 0) meth = 4.0 + RG3.nextGaussian();
+				if (steps % stepsPerMethChange == 0) meth = 5.0 + RG3.nextGaussian();
 				break;
 			case 3:  // M = 0.0 (minimum entropy and minimum information)
 				meth = 0.0;
@@ -97,7 +99,7 @@ public class Network {
 				}
 				break;
 			case 7:  // 7th degree polynomial best fit based on 100 simulations
-				meth = ligandToMethPoly(logS);
+				meth = ligandToMethPoly(logS) + RG3.nextGaussian() / 16.0;
 				break;
 			// case 8:  // Memory of previous ligand levels using S from several time steps ago
 			// 	methMemory.add(S);
@@ -117,6 +119,9 @@ public class Network {
 
 		// Clamp methylation level to be between 0 and 8
 		clampMeth();
+
+		// Increment step counter
+		steps++;
 
 		// compute free-energy offset from methylation:
 		if(meth<0) eps_meth=1.0; // Endres & Wingreen, 2006, piece-wise linear
