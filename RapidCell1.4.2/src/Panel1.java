@@ -606,7 +606,7 @@ public class Panel1 extends JPanel {
 	 */
 	private JTextField getJTextFieldNcells() {
 		if (jTextFieldNcells == null) {
-			jTextFieldNcells = new JTextField("5");
+			jTextFieldNcells = new JTextField("100");
 			jTextFieldNcells.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			jTextFieldNcells.setBounds(new Rectangle(410, 46, 85, 20));
 			jTextFieldNcells.setHorizontalAlignment(JTextField.RIGHT);
@@ -622,7 +622,7 @@ public class Panel1 extends JPanel {
 	 */
 	private JTextField getJTextFieldTmax() {
 		if (jTextFieldTmax == null) {
-			jTextFieldTmax = new JTextField("10000");
+			jTextFieldTmax = new JTextField("2500");
 			jTextFieldTmax.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			jTextFieldTmax.setBounds(new Rectangle(410, 82, 85, 20));
 			jTextFieldTmax.setHorizontalAlignment(JTextField.RIGHT);

@@ -67,7 +67,6 @@ public class Network {
 		// Set initial methylation according to position
 		if (steps == 0) meth = ligandToMethPoly(logS);
 
-		// TODO: add random gaussian noise to precise function
 		switch (ligandMethylationRelationIndex) {
 			case 0:  // Real methylation dynamics (maximum drift)
 				updateMeth();
