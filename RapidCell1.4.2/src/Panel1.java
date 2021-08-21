@@ -832,10 +832,9 @@ public class Panel1 extends JPanel {
 				"Step Function",  // 1
 				"Gaussian",  // 2
 				"M = 0",  // 3
-				"Exponential",  // 4
-				"Linear (Two Segments)",  // 5
-				"Linear (One Segment)",  // 6
-				"Polynomial"  // 7
+				"Linear (Two Segments)",  // 4
+				"Linear (One Segment)",  // 5
+				"Polynomial"  // 6
 			};
 			jComboBoxLigandMethylation = new JComboBox(LigandMethylation);
 			jComboBoxLigandMethylation.setFont(new Font("Tahoma", Font.PLAIN, 15));

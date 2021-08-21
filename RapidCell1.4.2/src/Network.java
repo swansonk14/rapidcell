@@ -62,7 +62,7 @@ public class Network {
 	}
 
 	public void updateMWCmodel(double S){
-		double eps_meth = 0.0, sum_fa, sum_fs, F, logS = Math.log10(S);
+		double eps_meth = 0.0, sum_fa, sum_fs, F, logS = Math.log10(S), newMeth;
 
 		// Set initial methylation according to position
 		if (steps == 0) meth = ligandToMethPoly(logS);
@@ -72,7 +72,9 @@ public class Network {
 				updateMeth();
 				break;
 			case 1:  // Step function (high drift but with reduced information)
-				if (steps % stepsPerMethChange == 0) meth = Math.round(4 * ligandToMethPoly(logS)) / 4.0 + RG3.nextGaussian() / 32.0;
+				// if (steps % stepsPerMethChange == 0) meth = Math.round(4 * ligandToMethPoly(logS)) / 4.0 + RG3.nextGaussian() / 32.0;
+				newMeth = Math.round(4 * ligandToMethPoly(logS)) / 4.0;
+				meth = 0.0001 * newMeth + 0.9999 * meth;
 				break;
 			case 2:  // Gaussian distribution (medium drift with minimal information)
 				if (steps % stepsPerMethChange == 0) meth = 5.0 + RG3.nextGaussian();
@@ -80,26 +82,31 @@ public class Network {
 			case 3:  // M = 0.0 (minimum entropy and minimum information)
 				meth = 0.0;
 				break;
-			case 4:  // Exponential distribution (very low entropy and information with some drift)
-				if (steps % stepsPerMethChange == 0) meth = getNextExponential(0.5);
-				break;
-			case 5:  // Only includes two linearly increasing segments, otherwise m = 0.0 (balance of drift and entropy, leaning towards maximizing drift)
+			case 4:  // Only includes two linearly increasing segments, otherwise m = 0.0 (balance of drift and entropy, leaning towards maximizing drift)
 				if ((logS < -1.5) || ((logS > 1.0) && (logS < 2.5)) || (logS > 3.25)) meth = 0.0;
 				else {
 					if (meth == 0.0) meth = ligandToMethPoly(logS);
 					updateMeth();
 				}
 				break;
-			case 6:  // Only includes one linearly increasing segment, otherwise m = 0.0 (balance of drift and entropy, leaning towards minimizing entropy)
+			case 5:  // Only includes one linearly increasing segment, otherwise m = 0.0 (balance of drift and entropy, leaning towards minimizing entropy)
 				if ((logS < 2.5) || (logS > 3.25)) meth = 0.0;
 				else {
 					if (meth == 0.0) meth = ligandToMethPoly(logS);
 					updateMeth();
 				}
 				break;
-			case 7:  // 7th degree polynomial best fit based on 100 simulations
-				meth = ligandToMethPoly(logS) + RG3.nextGaussian() / 16.0;
+			case 6:  // 7th degree polynomial best fit based on 100 simulations
+				// methMemory.add(logS);
+				// if (methMemory.size() > 0) logS = methMemory.remove();
+				// else logS = methMemory.element();
+				// meth = ligandToMethPoly(logS) + RG3.nextGaussian() / 16.0;
+				newMeth = ligandToMethPoly(logS);
+				meth = 0.0001 * newMeth + 0.9999 * meth;
 				break;
+			// case 7:  // Exponential distribution (very low entropy and information with some drift)
+			// 	if (steps % stepsPerMethChange == 0) meth = getNextExponential(0.5);
+			// 	break;
 			// case 8:  // Memory of previous ligand levels using S from several time steps ago
 			// 	methMemory.add(S);
 			// 	if (methMemory.size() > 100) S = methMemory.remove();
