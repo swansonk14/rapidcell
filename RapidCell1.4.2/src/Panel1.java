@@ -829,12 +829,13 @@ public class Panel1 extends JPanel {
 		if (jComboBoxLigandMethylation == null) {
 			String[] LigandMethylation = {
 				"Methylation Dynamics",  // 0
-				"Step Function",  // 1
-				"Gaussian",  // 2
-				"M = 0",  // 3
-				"Linear (Two Segments)",  // 4
-				"Linear (One Segment)",  // 5
-				"Polynomial"  // 6
+				"Polynomial",  // 1
+				"Polynomial (memory)",  // 2
+				"Step Function",  // 3
+				"Gaussian",  // 4
+				"M = 0",  // 5
+				"Linear (Two Segments)",  // 6
+				"Linear (One Segment)",  // 7
 			};
 			jComboBoxLigandMethylation = new JComboBox(LigandMethylation);
 			jComboBoxLigandMethylation.setFont(new Font("Tahoma", Font.PLAIN, 15));
